@@ -1,0 +1,38 @@
+---
+title: "Introduction"
+description: "Get notified the moment an event happens, instead of polling"
+---
+
+<Steps>
+  <Step title="Create a subscription">
+    ```bash
+    curl -X POST https://api.flovoo.com/v1/webhooks \
+      -H "Authorization: Bearer flv_your_api_key" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "url": "https://your-server.com/webhooks/flovoo",
+        "events": ["contact.created", "message.created"]
+      }'
+    ```
+
+    The response carries a `secret` **once, and never again** — store it immediately.
+  </Step>
+  <Step title="Verify every delivery">
+    Each delivery carries an `X-Flovo-Signature` header in the form `t=<unix_timestamp>,v1=<hex>`. Compute the expected signature and compare:
+
+    ```
+    signature = HMAC_SHA256(secret, `${t}.${raw_body}`)
+    ```
+
+    Reject any signature where `t` is more than 5 minutes old.
+  </Step>
+</Steps>
+
+## Delivery behavior
+
+- Failed deliveries are retried 6 times with exponential backoff.
+- 12 consecutive failures automatically disable the subscription.
+- Requests time out after 10 seconds and do not follow redirects.
+- Any `2xx` response is treated as success.
+
+See [Webhook Events](/webhooks/events) for the full list of events and their payloads.

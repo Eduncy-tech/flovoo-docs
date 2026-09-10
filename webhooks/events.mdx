@@ -1,0 +1,353 @@
+---
+title: "Webhook Events"
+description: "Every event you can subscribe to, with its JSON payload and field descriptions"
+---
+
+Every delivery wraps the event's payload in the same envelope:
+
+```json
+{
+  "eventId": "evt_0198f2a1-...",
+  "event": "contact.created",
+  "createdAt": "2026-09-09T18:26:19.671Z",
+  "data": { ... }
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `eventId` | Unique id for this delivery. Use it to de-duplicate retried deliveries. |
+| `event` | The event name, matching one of the events below. |
+| `createdAt` | When the event was dispatched, in ISO 8601. |
+| `data` | The event-specific payload, documented below. |
+
+## contact.created
+
+A new contact was created in the organization.
+
+```json
+{
+  "contact": {
+    "id": "b3f1...",
+    "organizationId": "a91c...",
+    "phone": "201234567890",
+    "name": "Ahmed Samir",
+    "createdAt": "2026-09-09T18:26:19.671Z",
+    "updatedAt": "2026-09-09T18:26:19.671Z"
+  }
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `contact` | The full contact object as stored. |
+
+## contact.updated
+
+A contact's fields were changed (name, tags, custom fields, stage, ...).
+
+```json
+{
+  "contact": {
+    "id": "b3f1...",
+    "organizationId": "a91c...",
+    "phone": "201234567890",
+    "name": "Ahmed Samir",
+    "updatedAt": "2026-09-09T18:26:19.671Z"
+  }
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `contact` | The updated contact object. |
+
+## contact.deleted
+
+A contact was deleted.
+
+```json
+{
+  "contact": {
+    "id": "b3f1...",
+    "organizationId": "a91c..."
+  }
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `contact` | The identifiers of the deleted contact. |
+
+## message.created
+
+A new message was sent or received (inbound or outbound) on a conversation.
+
+```json
+{
+  "conversationId": "c771...",
+  "contactId": "b3f1...",
+  "messages": [
+    {
+      "id": "m001...",
+      "conversationId": "c771...",
+      "direction": "inbound",
+      "type": "text",
+      "text": "Hello!",
+      "createdAt": "2026-09-09T18:26:19.671Z"
+    }
+  ]
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `conversationId` | The conversation the message belongs to. |
+| `contactId` | The contact on the other end of the conversation, or `null` if unresolved. |
+| `messages` | One or more message objects created together (e.g. a media message with a caption). |
+
+## message.updated
+
+A message's delivery status changed (sent, delivered, read, failed).
+
+```json
+{
+  "message": {
+    "id": "m001...",
+    "organizationId": "a91c...",
+    "status": "delivered",
+    "updatedAt": "2026-09-09T18:26:19.671Z"
+  }
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `message` | The message with its updated status. |
+
+## template.created
+
+A new WhatsApp template was created.
+
+```json
+{
+  "template": {
+    "id": "t001...",
+    "wabaId": "w001...",
+    "name": "order_confirmation",
+    "language": "en",
+    "status": "PENDING",
+    "category": "MARKETING",
+    "bodyText": "Your order {{1}} has been confirmed."
+  }
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `template` | The full template object as created, prior to Meta review. |
+
+## template.status.updated
+
+Meta approved or rejected a template.
+
+```json
+{
+  "template": {
+    "templateId": "t001...",
+    "organizationId": "a91c...",
+    "status": "APPROVED",
+    "rejectionReason": null
+  }
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `template.status` | The new status: `APPROVED`, `REJECTED`, or `PENDING`. |
+| `template.rejectionReason` | Present only when `status` is `REJECTED`. |
+
+## template.quality.updated
+
+A template's quality rating changed.
+
+```json
+{
+  "template": {
+    "templateId": "t001...",
+    "organizationId": "a91c...",
+    "qualityScore": "GREEN"
+  }
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `template.qualityScore` | `GREEN`, `YELLOW`, or `RED`. |
+
+## template.category.updated
+
+Meta moved a template to another category.
+
+```json
+{
+  "template": {
+    "templateId": "t001...",
+    "organizationId": "a91c...",
+    "category": "UTILITY"
+  }
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `template.category` | The template's new category. |
+
+## template.deleted
+
+A WhatsApp template was deleted.
+
+```json
+{
+  "id": "t001..."
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `id` | The id of the deleted template. |
+
+## channel.status.updated
+
+A channel's connection status changed (connected, disconnected, banned, ...).
+
+```json
+{
+  "channelId": "ch001...",
+  "status": "CONNECTED",
+  "isConnected": true,
+  "reason": null,
+  "label": "Support Line",
+  "platformId": "1590000000000"
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `channelId` | The channel whose status changed. |
+| `status` | The new channel status. |
+| `isConnected` | Whether the channel is currently connected. |
+| `reason` | Why the status changed, when applicable. |
+| `label` | The channel's display name. |
+| `platformId` | The WhatsApp phone number id on Meta's side. |
+
+## channel.deleted
+
+A channel was deleted.
+
+```json
+{
+  "channelId": "ch001..."
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `channelId` | The id of the deleted channel. |
+
+## waba.violation.detected
+
+Meta flagged a policy violation on one or more of your WhatsApp Business Accounts.
+
+```json
+{
+  "channelIds": ["ch001...", "ch002..."],
+  "violationType": "SPAM_RATE_LIMIT"
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `channelIds` | Channels affected by the violation. |
+| `violationType` | The kind of violation Meta reported. |
+
+## waba.restrictions.updated
+
+Meta placed or lifted a restriction on one or more channels.
+
+```json
+{
+  "channelIds": ["ch001..."],
+  "restrictions": [
+    {
+      "type": "MESSAGING_LIMIT",
+      "description": "Daily conversation limit reduced",
+      "expiration": 1717430460,
+      "remediation": "Improve quality rating to lift the limit"
+    }
+  ]
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `channelIds` | Channels the restrictions apply to. |
+| `restrictions[].type` | The kind of restriction Meta applied. |
+| `restrictions[].description` | Human-readable explanation. |
+| `restrictions[].expiration` | Unix timestamp the restriction lifts at. |
+| `restrictions[].remediation` | What to do to lift the restriction, when known. |
+
+## broadcast.completed
+
+A broadcast finished sending to its whole audience.
+
+```json
+{
+  "broadcastId": "br001...",
+  "total": 500,
+  "sent": 486,
+  "failed": 14,
+  "skipped": 0,
+  "sentAt": "2026-09-09T18:26:19.671Z",
+  "channelName": "Support Line",
+  "status": "SENT"
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `total` | The audience size. |
+| `sent` | Messages delivered successfully. |
+| `failed` | Messages that failed to send. |
+| `skipped` | Contacts excluded before sending (no phone, unreachable, ...). |
+| `status` | `SENT` for this event; broadcasts with 0 sent and some failed are reported on `broadcast.failed` instead. |
+
+## broadcast.failed
+
+A broadcast could not be sent, or failed outright.
+
+```json
+{
+  "broadcastId": "br001...",
+  "errorMessage": "No sendable contacts found in this audience."
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `broadcastId` | The broadcast that failed. |
+| `errorMessage` | Human-readable reason for the failure. |
+
+## broadcast.deleted
+
+A broadcast was deleted.
+
+```json
+{
+  "id": "br001..."
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `id` | The id of the deleted broadcast. |

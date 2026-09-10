@@ -1,0 +1,56 @@
+---
+title: "Errors & Rate Limits"
+description: "Status codes, error shape, and how rate limiting works"
+---
+
+## Rate limits
+
+Requests are rate-limited per API key, per minute, using a fixed window. The limit depends on the *kind* of operation the scope performs, not the specific endpoint:
+
+| Category | Limit | Applies to |
+| --- | --- | --- |
+| **Read** | 300 / min | `list`, `get`, and other read-only scopes |
+| **Write** | 120 / min | `create`, `update`, `delete`, `block` scopes |
+| **Send** | 60 / min | `chats.sendMessage` — sending a message or template |
+
+Every response carries the current state of your limit:
+
+```
+X-RateLimit-Limit: 120
+X-RateLimit-Remaining: 117
+X-RateLimit-Reset: 1717430460
+```
+
+Exceeding the limit returns `429 Too Many Requests` with a `Retry-After` header (seconds until the window resets):
+
+```json
+{
+  "code": "rate_limit_exceeded",
+  "message": "Rate limit of 120 requests per minute exceeded. Retry in 42s."
+}
+```
+
+<Tip>
+  Sending several requests back to back? Read `X-RateLimit-Remaining` and back off before you hit zero, rather than waiting for a 429 and retrying.
+</Tip>
+
+## Errors
+
+Flovoo uses standard HTTP status codes. The body always follows the same shape, so your error handling doesn't need a special case per endpoint.
+
+| Status | Meaning |
+| --- | --- |
+| `400` | Validation error — the request body or query failed schema validation. Every failing field is listed, not just the first. |
+| `401` | Missing, unknown, or revoked API key. |
+| `403` | The key is valid but lacks the scope this endpoint requires. |
+| `404` | The requested resource does not exist in your organization. |
+| `409` | Conflict — e.g. a duplicate name, or the resource is still referenced elsewhere. |
+| `429` | Rate limit exceeded — see [Rate limits](#rate-limits) above. |
+
+```json
+{
+  "error": "invalid_request_error",
+  "code": "not_found",
+  "message": "Contact with ID 0198f2a1-... not found in this organization."
+}
+```

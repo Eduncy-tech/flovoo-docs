@@ -1,0 +1,99 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Flovoo",
+  "colors": {
+    "primary": "#6a5cf0",
+    "light": "#22b6f6",
+    "dark": "#4f2fd1"
+  },
+  "favicon": "/favicon.png",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Home",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "index"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "api-reference/introduction",
+              "api-reference/authentication",
+              "api-reference/errors-and-rate-limits"
+            ]
+          },
+          {
+            "group": "API DOCUMENTATION V1",
+            "openapi": "api-reference/openapi.json"
+          },
+          {
+            "group": "Webhooks",
+            "pages": [
+              "webhooks/introduction",
+              "webhooks/events"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Help Center",
+          "href": "https://help.flovoo.com",
+          "icon": "life-ring"
+        },
+        {
+          "anchor": "Dashboard",
+          "href": "https://app.flovoo.com",
+          "icon": "grid-2"
+        }
+      ]
+    }
+  },
+  "logo": {
+    "light": "/logo/light.png",
+    "dark": "/logo/dark.png",
+    "href": "https://flovoo.com/ar"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:support@flovoo.com"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://app.flovoo.com"
+    }
+  },
+  "api": {
+    "openapi": "api-reference/openapi.json"
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "mcp"
+    ]
+  },
+  "footer": {
+    "socials": {
+      "linkedin": "https://www.linkedin.com/company/eduncy-solution/"
+    }
+  }
+}
