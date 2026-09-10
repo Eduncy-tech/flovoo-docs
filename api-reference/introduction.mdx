@@ -1,9 +1,43 @@
 ---
 title: "Introduction"
-description: "What the Flovoo API is, and how it's organized"
+description: "The Flovoo API — build on top of your WhatsApp Business platform"
 ---
 
-Flovoo's API lets you read and manage the same data your team sees in the dashboard — contacts, conversations, messages, templates, broadcasts and more. Endpoints on this page are grouped by resource: Contacts, Conversations, Messages, Tags, Contact Stages, Segments, Quick Replies, Custom Fields, Broadcasts, WhatsApp Templates, Users, Channels, and Webhooks.
+Flovoo lets you manage contacts, conversations, and WhatsApp messaging for your business. The Flovoo API gives you programmatic access to that same data — the same contacts, conversations, messages, templates, and broadcasts your team sees in the dashboard — so you can build automations, sync your CRM, or trigger messages from your own systems.
+
+The API follows REST conventions — `GET`, `POST`, `PATCH`, `DELETE` — with JSON request and response bodies, standard HTTP status codes, and a Bearer token on every request.
+
+The base URL for all API requests is `https://api.flovoo.com`, and all requests must be made over HTTPS.
+
+Endpoints are grouped by resource in the sidebar: Contacts, Conversations, Messages, Tags, Contact Stages, Segments, Quick Replies, Custom Fields, Broadcasts, WhatsApp Templates, Users, Channels, and Webhooks. Need real-time updates instead of polling? See [Webhooks](/webhooks/introduction).
+
+## Prerequisites
+
+- A Flovoo account with at least one connected WhatsApp channel
+- Owner access to your organization (only the Owner role can create API keys)
+
+## Get started
+
+<Steps>
+  <Step title="Generate an API key">
+    In the Flovoo dashboard, go to **Connectors → API → Generate new token**. Give it a name and select only the scopes your integration needs — each scope maps directly to the endpoints below.
+
+    <Warning>
+      Your key is shown only once. Copy it immediately and store it somewhere safe — it cannot be retrieved again.
+    </Warning>
+  </Step>
+  <Step title="Make your first request">
+    Every request must include your API key as a Bearer token:
+
+    ```bash
+    curl https://api.flovoo.com/v1/contacts \
+      -H "Authorization: Bearer flv_your_api_key"
+    ```
+  </Step>
+  <Step title="Explore the endpoints">
+    Explore available endpoints below, grouped by resource — Contacts, Conversations, Messages, Broadcasts, Webhooks, and more.
+  </Step>
+</Steps>
 
 ## API versions
 

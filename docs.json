@@ -11,17 +11,6 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Home",
-        "groups": [
-          {
-            "group": "Overview",
-            "pages": [
-              "index"
-            ]
-          }
-        ]
-      },
-      {
         "tab": "API Reference",
         "groups": [
           {
@@ -44,22 +33,20 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "Help Center",
+        "href": "https://help.flovoo.com/en"
+      },
+      {
+        "tab": "Roadmap",
+        "href": "https://news.flovoo.com/en"
+      },
+      {
+        "tab": "Updates",
+        "href": "https://news.flovoo.com/en/updates"
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Help Center",
-          "href": "https://help.flovoo.com",
-          "icon": "life-ring"
-        },
-        {
-          "anchor": "Dashboard",
-          "href": "https://app.flovoo.com",
-          "icon": "grid-2"
-        }
-      ]
-    }
+    ]
   },
   "logo": {
     "light": "/logo/light.png",
